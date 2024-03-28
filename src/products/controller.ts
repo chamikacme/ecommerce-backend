@@ -9,6 +9,7 @@ import {
 } from "./service";
 import validateMongoDBId from "../utils/validateMongoDBId";
 import { HttpError } from "routing-controllers";
+import cloudinary from "../config/cloudinary";
 
 export const createProductController = async (
   req: express.Request,
@@ -18,14 +19,21 @@ export const createProductController = async (
     const bodySchema = z.object({
       name: z.string().min(3),
       price: z.number().positive({ message: "Price must be positive" }),
-      image: z.optional(z.string()),
+      image: z.string().url().optional(),
     });
 
     const { name, price, image } = bodySchema.parse(req.body);
 
+    const result = await cloudinary.uploader.upload(image, {
+      upload_preset: "unsigned_upload",
+      allowed_formats: ["jpg", "png", "jpeg", "gif", "svg", "webp"],
+    });
+
+    const imageUrl = result.secure_url;
+
     const userId = req.body.user.id;
 
-    const response = await createProduct(name, price, image, userId);
+    const response = await createProduct(name, price, imageUrl, userId);
 
     res.status(200).json({
       status: "Success",
@@ -95,9 +103,17 @@ export const updateProductController = async (
     });
 
     const { name, price, image } = bodySchema.parse(req.body);
+
     const { id } = req.params;
 
-    const response = await updateProduct(id, name, price, image);
+    const result = await cloudinary.uploader.upload(image, {
+      upload_preset: "unsigned_upload",
+      allowed_formats: ["jpg", "png", "jpeg", "gif", "svg", "webp"],
+    });
+
+    const imageUrl = result.secure_url;
+
+    const response = await updateProduct(id, name, price, imageUrl);
 
     res.status(200).json({
       status: "Success",

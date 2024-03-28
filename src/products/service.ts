@@ -37,11 +37,11 @@ export const updateProduct = async (
   id: string,
   name: string,
   price: number,
-  image: string
+  imageUrl: string
 ) => {
   const product = await Product.findByIdAndUpdate(
     id,
-    { name, price, image },
+    { name, price, image: imageUrl },
     { new: true }
   );
 
