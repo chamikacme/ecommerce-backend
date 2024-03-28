@@ -1,4 +1,5 @@
 import Product from "./model/Product";
+import User from "../auth/models/User";
 import { HttpError } from "routing-controllers";
 
 export const createProduct = async (
@@ -64,6 +65,18 @@ export const deleteProduct = async (id: string) => {
 
 export const getMyProducts = async (userId: number) => {
   const products = await Product.find({ userId });
+
+  return products;
+};
+
+export const getFavoriteProducts = async (userId: number) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new HttpError(404, "User not found");
+  }
+
+  const products = await Product.find({ _id: { $in: user.favorites } });
 
   return products;
 };

@@ -56,3 +56,18 @@ export const login = async (mobileNumber: string, password: string) => {
     token,
   };
 };
+
+export const updateFavorites = async (userId: string, favorites: string[]) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new HttpError(404, "User not found");
+  }
+
+  user.favorites = favorites;
+
+  await user.save();
+
+  return {
+    user,
+  };
+};

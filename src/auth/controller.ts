@@ -1,6 +1,10 @@
 import express from "express";
 import { z } from "zod";
-import { register as registerService, login as loginService } from "./service";
+import {
+  register as registerService,
+  login as loginService,
+  updateFavorites,
+} from "./service";
 
 export const register = async (req: express.Request, res: express.Response) => {
   try {
@@ -59,6 +63,27 @@ export const validateToken = async (
     res.status(200).json({
       status: "Success",
       data: user,
+    });
+  } catch (error) {
+    res.status(error.httpCode || 500).json({
+      status: "Failed",
+      message: error.message,
+    });
+  }
+};
+
+export const updateFavoritesController = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const userId = req.body.user._id;
+    const favorites: string[] = req.body.favorites;
+    const response = await updateFavorites(userId, favorites);
+
+    res.status(200).json({
+      status: "Success",
+      data: response,
     });
   } catch (error) {
     res.status(error.httpCode || 500).json({

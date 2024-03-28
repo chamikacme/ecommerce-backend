@@ -15,6 +15,11 @@ const UserSchema = new Schema(
       required: [true, "Mobile number is required"],
       unique: [true, "Mobile number already exists"],
     },
+    favorites: {
+      type: [Schema.Types.ObjectId],
+      ref: "Product",
+      default: [],
+    },
   },
   {
     timestamps: true,

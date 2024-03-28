@@ -7,6 +7,7 @@ import {
   updateProduct,
   deleteProduct,
   getMyProducts,
+  getFavoriteProducts,
 } from "./service";
 import validateMongoDBId from "../utils/validateMongoDBId";
 import { HttpError } from "routing-controllers";
@@ -157,6 +158,27 @@ export const getMyProductsController = async (
     const userId = req.body.user.id;
 
     const response = await getMyProducts(userId);
+
+    res.status(200).json({
+      status: "Success",
+      data: response,
+    });
+  } catch (error) {
+    res.status(error.httpCode || 500).json({
+      status: "Failed",
+      message: error.message,
+    });
+  }
+};
+
+export const getFavoriteProductsController = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const userId = req.body.user.id;
+
+    const response = await getFavoriteProducts(userId);
 
     res.status(200).json({
       status: "Success",
