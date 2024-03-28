@@ -61,3 +61,9 @@ export const deleteProduct = async (id: string) => {
 
   return product;
 };
+
+export const getMyProducts = async (userId: number) => {
+  const products = await Product.find({ userId });
+
+  return products;
+};

@@ -5,6 +5,7 @@ import {
   getProductController,
   updateProductController,
   deleteProductController,
+  getMyProductsController,
 } from "./controller";
 import { auth } from "../middleware/authMiddleware";
 import { validateProductOwner } from "../middleware/validateProductOwner";
@@ -14,6 +15,8 @@ const productRoutes = express.Router();
 productRoutes.post("/", auth, createProductController);
 
 productRoutes.get("/", getProductsController);
+
+productRoutes.get("/my-products", auth, getMyProductsController);
 
 productRoutes.get("/:id", getProductController);
 

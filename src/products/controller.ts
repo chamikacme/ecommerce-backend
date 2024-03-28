@@ -6,6 +6,7 @@ import {
   getProduct,
   updateProduct,
   deleteProduct,
+  getMyProducts,
 } from "./service";
 import validateMongoDBId from "../utils/validateMongoDBId";
 import { HttpError } from "routing-controllers";
@@ -135,6 +136,27 @@ export const deleteProductController = async (
     const { id } = req.params;
 
     const response = await deleteProduct(id);
+
+    res.status(200).json({
+      status: "Success",
+      data: response,
+    });
+  } catch (error) {
+    res.status(error.httpCode || 500).json({
+      status: "Failed",
+      message: error.message,
+    });
+  }
+};
+
+export const getMyProductsController = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  try {
+    const userId = req.body.user.id;
+
+    const response = await getMyProducts(userId);
 
     res.status(200).json({
       status: "Success",
